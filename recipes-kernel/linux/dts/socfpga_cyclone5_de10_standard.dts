@@ -1,0 +1,154 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (C) 2026 Nimesh Acharya <Radonoxius@protonmail.com>
+ */
+
+#include "socfpga_cyclone5.dtsi"
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+
+/ {
+    model = "Terasic DE10-Standard";
+    compatible = "altr,socfpga-cyclone5", "altr,socfpga";
+
+    chosen {
+        stdout-path = "serial0:115200n8";
+    };
+
+    memory@0 {
+        device_type = "memory";
+        reg = <0x0 0x40000000>; /* 1GB */
+    };
+
+    aliases {
+        /* this allow the ethaddr uboot environmnet variable contents
+         * to be added to the gmac1 device tree blob.
+         */
+        ethernet0 = &gmac1;
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        hps_led {
+            label = "hps:green:led";
+            gpios = <&portb 24 0>; /* HPS_GPIO53 */
+            linux,default-trigger = "heartbeat";
+        };
+    };
+
+    gpio-keys {
+        compatible = "gpio-keys";
+
+        hps_key {
+            label = "hps_key";
+            gpios = <&portb 25 GPIO_ACTIVE_LOW>; // Was: <&portb 25 0>
+            linux,code = <BTN_0>;
+        };
+    };
+
+    lcd_backlight: backlight {
+        compatible = "gpio-backlight";
+
+        /* HPS_LCM_BK: GPIO37, active-high backlight control */
+        gpios = <&portb 8 GPIO_ACTIVE_HIGH>;
+
+        default-on;
+    };
+
+    regulator_3_3v: regulator {
+        compatible = "regulator-fixed";
+        regulator-name = "VCC3P3";
+        regulator-min-microvolt = <3300000>;
+        regulator-max-microvolt = <3300000>;
+    };
+};
+
+&gmac1 {
+    phy-mode = "rgmii-id";
+    status = "okay";
+
+    mdio0 {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        compatible = "snps,dwmac-mdio";
+
+        ethernet-phy@0 {
+            compatible = "micrel,ksz9031";
+            reg = <0>;
+            rxd0-skew-ps = <420>;
+            rxd1-skew-ps = <420>;
+            rxd2-skew-ps = <420>;
+            rxd3-skew-ps = <420>;
+            rxdv-skew-ps = <420>;
+            txen-skew-ps = <0>;
+        };
+    };
+};
+
+&gpio0 { /* GPIO 0..29 */
+    status = "okay";
+};
+
+&gpio1 { /* GPIO 30..57 */
+    status = "okay";
+};
+
+&gpio2 { /* GPIO 58..66 (HLGPI 0..13 at offset 13) */
+    status = "okay";
+};
+
+&i2c0 {
+    status = "okay";
+
+    accel: accelerometer@53 {
+        compatible = "adi,adxl345";
+        reg = <0x53>;
+        interrupt-parent = <&portc>;
+        interrupts = <3 IRQ_TYPE_LEVEL_HIGH>;
+        interrupt-names = "INT1";
+    };
+};
+
+&spi0 {
+    status = "okay";
+
+    lcd@0 {
+        compatible = "novatek,nt7534";
+        reg = <0>;
+        spi-max-frequency = <3125000>;
+
+        /* HPS_LCM_D_C: GPIO41, data/command */
+        dc-gpios = <&portb 12 GPIO_ACTIVE_HIGH>;
+
+        /* HPS_LCM_RST_N: GPIO44, active-low reset */
+        reset-gpios = <&portb 15 GPIO_ACTIVE_LOW>;
+
+        /* Managed through the separate gpio-backlight device */
+        backlight = <&lcd_backlight>;
+    };
+};
+
+&mmc0 {
+    status = "okay";
+};
+
+&uart0 {
+    /*
+     * Accessible via USB (FT232R) on Mini-USB plug J4
+     * RX = TRACE_D0/SPIS0_CLK/UART0_RX/HPS_GPIO49
+     * TX = TRACE_D1/SPIS0_MOSI/UART0_TX/HPS_GPIO50
+     * no handshaking lines
+     */
+    clock-frequency = <100000000>;
+};
+
+&usb0 {
+    status = "okay";
+};
+
+&usb1 {
+    status = "okay";
+};
