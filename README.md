@@ -5,8 +5,10 @@ A yocto layer that adds support for Terasic DE10-Standard board
 Depends on the meta-intel-fpga layer!
 
 Tested on:
-+ Yocto Wrynose
-    + Linux 6.18-lts & U-Boot 2026.04
+
+| Yocto Release | Linux Kernel | U-Boot  |
+| ------------- | ------------ | ------- |
+| Wrynose       | 6.18-lts     | 2026.04 |
  
 ### Driver Support
 I'll add support for this device upstream soon.
