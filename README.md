@@ -2,9 +2,23 @@
 A yocto layer that adds support for Terasic DE10-Standard board
 
 # Info
-Tested on Yocto Wrynose release, linux kernel 6.18-lts and U-Boot 2026.04
-
 Depends on the meta-intel-fpga layer!
+
+Tested on:
++ Yocto Wrynose
+    + Linux 6.18-lts & U-Boot 2026.04
+ 
+### Driver Support
+I'll add support for this device upstream soon.
+
+If you prefer a build with builtin driver support & other developer features, you might want to use this instead.
+
+|      Peripheral      | Status |
+| -------------------- | :----: |
+| USB                  |   ⬜   |
+| Ethernet             |   ⬜   |
+| Accelerometer        |   ✅   |
+| LCD Display          |   ⬜   |
 
 # Usage
 This is the minimal (nodistro) local.conf file you need to use this layer:
