@@ -8,7 +8,7 @@ Tested on:
 
 | Yocto Release | Linux Kernel | U-Boot  |
 | ------------- | ------------ | ------- |
-| Wrynose       | 6.18-lts     | 2026.04 |
+| Wrynose       | 6.18-lts     | 2026.07 |
  
 ### Driver Support
 I'll add support for this device upstream soon.
