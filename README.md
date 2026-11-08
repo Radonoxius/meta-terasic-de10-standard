@@ -1,8 +1,8 @@
 # meta-terasic-de10-standard
-A yocto layer that adds support for Terasic DE10-Standard board
+A yocto layer that adds support for Terasic DE10-Standard board. Support for this device will be upstreamed soon.
 
-# Info
-Depends on the meta-intel-fpga layer!
+# Layer Info
+Depends on the `meta-intel-fpga` Yocto layer!
 
 Tested on:
 
@@ -10,20 +10,27 @@ Tested on:
 | ------------- | ------------ | ------- |
 | Wrynose       | 6.18-lts     | 2026.07 |
  
-### Driver Support
-I'll add support for this device upstream soon.
-
-If you prefer a build with builtin driver support & other developer features, you might want to use this instead.
+# Driver Support
+If you prefer a build with builtin driver support & other developer features, you might want to use this layer.
 
 |      Peripheral      | Status |
 | -------------------- | :----: |
-| USB                  |   ⬜   |
-| Ethernet             |   ⬜   |
+| USB                  |   ✅   |
+| Ethernet             |   ✅   |
 | Accelerometer        |   ✅   |
 | LCD Display          |   ⬜   |
 
-# Usage
-This is the minimal (nodistro) local.conf file you need to use this layer:
+# FPGA Usage
+The FPGA is flashed at boot-time before booting into Linux automatically.
+
+You will need to use Quartus to create an RBF file (use FPPx16 and enable Compression in settings) from your design/SOF file.
+Rename the generated file strictly as `fpga.rbf` and copy it to the boot partition on the SD card that the board will use.
+
+If the RBF file doesnt exist or has a different name, the FPGA will not be flashed.
+
+# Compiling Linux
+This is the minimal (nodistro) local.conf file I would suggest you, to use with this layer:
+
 ```
 # Machine
 MACHINE ?= "de10-standard"
@@ -59,5 +66,7 @@ BB_DISKMON_DIRS ??= "\
 
 CONF_VERSION = "2"
 ```
+
+The minimal CLI build will take about 4 hours to finish on machine with 12 core CPU & 16GB RAM.
 
 
